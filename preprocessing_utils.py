@@ -1,8 +1,9 @@
+import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, PowerTransformer
-
+from sklearn.model_selection import train_test_split
 
 nominal_columns = ['fn', 'tid', 'title', 'wordsInTitle', 'url']
 
@@ -20,6 +21,21 @@ num_columns = [
 
 comb_columns = ['totalNominations', 'winsPerNomination', 'reviewsPerRating']
 
+
+def stratify_split_imdb(df, test_size=0.2, drop_cat=True, random_state=42):
+    """
+    Splits the data into a training set and a test set with stratifying to keep the distributions similar
+
+    If drop_cat is False, the categorical feature used for stratification will be kept in the output datasets
+    """
+
+    cat = np.array(pd.cut(df['imdbRating'], bins=10, labels=range(10)))
+    if not drop_cat:
+        df = df.copy()
+        df['imdbRating_cat'] = cat
+
+    training_set, test_set = train_test_split(df, test_size=0.2, stratify=cat, random_state=random_state)
+    return training_set, test_set
 
 def separate_features_targets(df, target_column='imdbRating'):
     feature_columns = list(df.columns)

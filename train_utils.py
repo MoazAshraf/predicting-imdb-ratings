@@ -9,6 +9,7 @@ from sklearn.externals import joblib
 
 MODELS_DIR = 'models'
 TRAIN_LOGS_DIR = 'train_logs'
+TENSORBOARD_LOGS_DIR = os.path.join(TRAIN_LOGS_DIR, 'tensorboard')
 
 def cross_val_rmse(model, X, y, cv=5, random_state=None, model_name=None, verbose=False):
     """
@@ -118,3 +119,18 @@ def summarize_cv_results(cv_results):
         })
     
     return pd.concat([params, errors_df], axis=1)
+
+def get_fit_logdir():
+    fit_id = time.strftime("fit_%Y_%m_%d-%H_%M_%S")
+    return os.path.join(TENSORBOARD_LOGS_DIR, fit_id)
+
+def evaluate_keras_model(model, train_X, train_y, val_X, val_y):
+    
+    # make predictions
+    train_pred_y = model.predict(train_X)
+    val_pred_y = model.predict(val_X)
+
+    # calculate root mean squared error
+    train_rmse = np.sqrt(mean_squared_error(train_y, train_pred_y))
+    val_rmse = np.sqrt(mean_squared_error(val_y, val_pred_y))
+    return pd.DataFrame({'train_rmse': [train_rmse], 'val_rmse': [val_rmse]})
