@@ -8,4 +8,4 @@ I followed the standard Machine Learning process and separated the steps in Jupy
 - Evaluating different machine learning models on the data (shortlist_models.ipynb)
 - Finetuning a few models and choosing the best (finetuning_forest.ipynb, finetuning_neuranet.ipynb)
 
-The best model so far is the finetuned fully-connected neural network achieveing an MSE of about 0.781.
+The best model so far is the finetuned fully-connected neural network achieveing an RMSE of about 0.781.
